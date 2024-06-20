@@ -1,0 +1,35 @@
+.main-layout {
+    min-height: 100vh;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f0f2f5;
+    padding: 0 20px;
+  }
+  
+  .menu {
+    flex-grow: 1;
+  }
+  
+  .logout-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+  
+  .content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+    background: #fff;
+  }
+  
+  .calorie-calculator-container {
+    width: 100%;
+    max-width: 1200px;
+  }
+  
