@@ -16,8 +16,7 @@ const Logged_in_page = () => {
       <Header className="header">
         <div className="menu">
           <Menu theme="light" mode="horizontal" selectable={false}>
-            <Menu.Item key="home" icon={<HomeOutlined />} onClick={() => navigate('/')}>
-              Home
+            <Menu.Item >
             </Menu.Item>
           </Menu>
         </div>

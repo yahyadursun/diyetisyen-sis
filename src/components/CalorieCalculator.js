@@ -271,8 +271,28 @@ const CalorieCalculator = () => {
   };
 
   return (
-    <div className="calorie-calculator-container">
-      <h1>Welcome, {username}!</h1>
+    <div className="calorie-calculator-container" 
+      style={{backgroundImage: 'url(background.png)',
+      backgroundRepeat: 'no-repeat',
+      backgroundPosition: 'center',
+      backgroundSize: 'cover',
+      width: '90%',
+      height: '50vh',
+      margin: '0',
+      padding: '0'}}>
+      <h1 style={{
+          fontSize: '48px',
+          fontWeight: 'bold',
+          color: '#4A90E2',
+          textShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)',
+          padding: '20px',
+          border: '3px solid #4A90E2',
+          borderRadius: '10px',
+          textAlign: 'center',
+          backgroundColor: '#F0F8FF'
+        }}>
+        Welcome, {username}!
+        </h1>
       <Card className="calorie-calculator-card" bordered={false}>
         <Title level={3} className="title">Daily Calorie Calculator</Title>
         <Form form={form} onFinish={onFinish} layout="vertical">
@@ -340,7 +360,7 @@ const CalorieCalculator = () => {
               {breakfastList.length > 0 && (
                 <ul>
                   {breakfastList.map((meal, index) => (
-                    <li key={index}>{meal.Besin}: {meal.Kalori_Miktari} kcal</li>
+                    <li key={index}>{meal.Besin}: {meal.Porsiyon_Miktari}: {meal.Kalori_Miktari} kcal</li>
                   ))}
                 </ul>
               )}
@@ -352,7 +372,7 @@ const CalorieCalculator = () => {
               {lunchList.length > 0 && (
                 <ul>
                   {lunchList.map((meal, index) => (
-                    <li key={index}>{meal.Besin}: {meal.Kalori_Miktari} kcal</li>
+                    <li key={index}>{meal.Besin}: {meal.Porsiyon_Miktari}:  {meal.Kalori_Miktari} kcal</li>
                   ))}
                 </ul>
               )}
@@ -364,7 +384,7 @@ const CalorieCalculator = () => {
               {dinnerList.length > 0 && (
                 <ul>
                   {dinnerList.map((meal, index) => (
-                    <li key={index}>{meal.Besin}: {meal.Kalori_Miktari} kcal</li>
+                    <li key={index}>{meal.Besin}:  {meal.Porsiyon_Miktari}:  {meal.Kalori_Miktari} kcal</li>
                   ))}
                 </ul>
               )}
@@ -376,7 +396,7 @@ const CalorieCalculator = () => {
               {snacksList.length > 0 && (
                 <ul>
                   {snacksList.map((meal, index) => (
-                    <li key={index}>{meal.Besin}: {meal.Kalori_Miktari} kcal</li>
+                    <li key={index}>{meal.Besin}:  {meal.Porsiyon_Miktari}:  {meal.Kalori_Miktari} kcal</li>
                   ))}
                 </ul>
               )}

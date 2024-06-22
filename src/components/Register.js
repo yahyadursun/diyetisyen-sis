@@ -40,10 +40,11 @@ const Register = () => {
   };
 
   return (
-    <Row justify="center" align="middle" style={{ height: '100vh' }}>
-      <Col>
+    <Row justify="center" align="middle" style={{ height: '100vh'}}>
+      <Col style={{height:'100vh'}}>
         <div style={{ padding: '40px', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0,0,0,0.1)', backgroundColor: '#fff' }}>
-          <Title level={2} style={{ textAlign: 'center' }}>Register</Title>
+          <Title level={2} style={{ textAlign: 'center', fontSize: '36px', fontWeight: 'bold', color: '#333' }}>Register</Title>
+
           <Form 
           onFinish={addData} 
           autoComplete="off">
