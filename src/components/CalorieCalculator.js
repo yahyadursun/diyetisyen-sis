@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, Input, Button, Typography, Row, Col, Select, Card, Divider, message } from 'antd';
+import { Form, Input, Button, Typography, Row, Col, Select, Card, Divider, message, Modal, Checkbox } from 'antd';
 import './CalorieCalculator.css'; // Import custom CSS for styling
 import axios from 'axios';
 
@@ -24,12 +24,19 @@ const CalorieCalculator = () => {
   const [lunchList, setLunchList] = useState([]);
   const [dinnerList, setDinnerList] = useState([]);
   const [snacksList, setSnacksList] = useState([]);
+  const [visibleModal, setVisibleModal] = useState(false);
+  const [modalType, setModalType] = useState('');
+  const [mealOptions, setMealOptions] = useState([]);
+  const [selectedMeals, setSelectedMeals] = useState([]);
+  const [totalSelectedCalories, setTotalSelectedCalories] = useState(0);
+  const [calorieLimit, setCalorieLimit] = useState(0);
+  const [disabledOptions, setDisabledOptions] = useState([]);
 
   const AlertButton = () => {
     const showAlert = () => {
-      message.success('Lists Mail Sended');
+      message.success('Lists Mail Sent');
     };
-  
+
     return (
       <div className="alert-button-container">
         <Button type="primary" onClick={showAlert}>
@@ -41,9 +48,9 @@ const CalorieCalculator = () => {
 
   const AlertButtonUser_info = () => {
     const showAlert = () => {
-      message.success('User physique info Mail Sended');
+      message.success('User physique info Mail Sent');
     };
-  
+
     return (
       <div className="alert-button-container">
         <Button type="primary" onClick={showAlert}>
@@ -126,30 +133,23 @@ const CalorieCalculator = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const makeBreakfastList = (breakfastcalorie) => {
+  const fetchMeals = (url, type, limitCalories) => {
     if (isFetching) return;
     setIsFetching(true);
-    
+    setCalorieLimit((limitCalories+25).toFixed(2)); // Set calorie limit for the modal // additional +25 calorie for making things easy
+
     axios({
       method: 'get',
-      url: 'https://v1.nocodeapi.com/yahay/google_sheets/KsgLmdaJtmoQSSWI?tabId=sayfa1',
+      url,
     })
       .then((response) => {
         const meals = response.data.data;
-  
+
         if (meals && meals.length > 0) {
-          message.success('Apıye Breakfast ulaşıldı');
-          const list = [];
-          let totalCalories = 0;
-          
-          for (var i = 0; i < meals.length; i++) {
-            let cal = parseInt(meals[i].Kalori_Miktari);
-            if (totalCalories + cal <= breakfastcalorie+25) {
-              list.push(meals[i]);
-              totalCalories += cal;
-            }
-          }
-          setBreakfastList(list);
+          message.success(`API fetched for ${type}`);
+          setMealOptions(meals);
+          setModalType(type);
+          setVisibleModal(true);
         } else {
           message.error('No meals found or invalid data');
         }
@@ -162,112 +162,42 @@ const CalorieCalculator = () => {
       });
   };
 
-  const makeLaunchList = (lunchcalorie) => {
-    if (isFetching) return;
-    setIsFetching(true);
+  const handleMealSelection = (selected) => {
+    let totalCalories = 0;
+    selected.forEach(meal => {
+      totalCalories += parseInt(meal.Kalori_Miktari);
+    });
 
-    axios({
-      method: 'get',
-      url: 'https://v1.nocodeapi.com/yahay/google_sheets/pqHSFrSugOJqIfCt?tabId=sayfa1',
-    })
-      .then((response) => {
-        const meals = response.data.data;
-  
-        if (meals && meals.length > 0) {
-          message.success('Apıye launch ulaşıldı');
-          const list = [];
-          let totalCalories = 0;
-          
-          for (var i = 0; i < meals.length; i++) {
-            let cal = parseInt(meals[i].Kalori_Miktari);
-            if (totalCalories + cal <= lunchcalorie+25) {
-              list.push(meals[i]);
-              totalCalories += cal;
-            }
-          }
-          setLunchList(list);
-        } else {
-          message.error('No meals found or invalid data');
-        }
-      })
-      .catch(() => {
-        message.error('Login failed');
-      })
-      .finally(() => {
-        setIsFetching(false);
-      });
+    if (totalCalories <= calorieLimit) {
+      setSelectedMeals(selected);
+      setTotalSelectedCalories(totalCalories);
+      setDisabledOptions([]);
+    } else {
+      message.error('Selected meals exceed the calorie limit!');
+      const disabledMealLabels = selected.filter(meal => !selectedMeals.includes(meal)).map(meal => meal.Besin);
+      setDisabledOptions(disabledMealLabels);
+    }
   };
-  
-  const makeDinnerList = (dinnercalorie) => {
-    if (isFetching) return;
-    setIsFetching(true);
 
-    axios({
-      method: 'get',
-      url: 'https://v1.nocodeapi.com/yahay/google_sheets/SUmYpLRIPwrUEijD?tabId=sayfa1',
-    })
-      .then((response) => {
-        const meals = response.data.data;
-  
-        if (meals && meals.length > 0) {
-          message.success('Apıye Dinner ulaşıldı');
-          const list = [];
-          let totalCalories = 0;
-          
-          for (var i = 0; i < meals.length; i++) {
-            let cal = parseInt(meals[i].Kalori_Miktari);
-            if (totalCalories + cal <= dinnercalorie+25) {
-              list.push(meals[i]);
-              totalCalories += cal;
-            }
-          }
-          setDinnerList(list);
-        } else {
-          message.error('No meals found or invalid data');
-        }
-      })
-      .catch(() => {
-        message.error('Login failed');
-      })
-      .finally(() => {
-        setIsFetching(false);
-      });
+  const handleOk = () => {
+    if (modalType === 'Breakfast') {
+      setBreakfastList(selectedMeals);
+    } else if (modalType === 'Lunch') {
+      setLunchList(selectedMeals);
+    } else if (modalType === 'Dinner') {
+      setDinnerList(selectedMeals);
+    } else if (modalType === 'Snacks') {
+      setSnacksList(selectedMeals);
+    }
+    setVisibleModal(false);
+    setSelectedMeals([]);
+    setTotalSelectedCalories(0);
   };
-  
-  const makeSnacksList = (snackscalorie) => {
-    if (isFetching) return;
-    setIsFetching(true);
 
-    axios({
-      method: 'get',
-      url: 'https://v1.nocodeapi.com/yahay/google_sheets/AznBYZtifIeenXaf?tabId=sayfa1',
-    })
-      .then((response) => {
-        const meals = response.data.data;
-  
-        if (meals && meals.length > 0) {
-          message.success('Apıye Snacks ulaşıldı');
-          const list = [];
-          let totalCalories = 0;
-          
-          for (var i = 0; i < meals.length; i++) {
-            let cal = parseInt(meals[i].Kalori_Miktari);
-            if (totalCalories + cal <= snackscalorie) {
-              list.push(meals[i]);
-              totalCalories += cal;
-            }
-          }
-          setSnacksList(list);
-        } else {
-          message.error('No meals found or invalid data');
-        }
-      })
-      .catch(() => {
-        message.error('Login failed');
-      })
-      .finally(() => {
-        setIsFetching(false);
-      });
+  const handleCancel = () => {
+    setVisibleModal(false);
+    setSelectedMeals([]);
+    setTotalSelectedCalories(0);
   };
 
   return (
@@ -354,8 +284,8 @@ const CalorieCalculator = () => {
         {calories && (
           <div className="result">
             <p><strong>Breakfast:</strong> {(calories * 0.25).toFixed(2)} kcal 
-              <p><Button onClick={() => makeBreakfastList(calories * 0.25)}>
-                makeBreakfastList
+              <p><Button onClick={() => fetchMeals('https://v1.nocodeapi.com/yahay/google_sheets/KsgLmdaJtmoQSSWI?tabId=sayfa1', 'Breakfast', calories * 0.25)}>
+                Make Breakfast List
               </Button></p>
               {breakfastList.length > 0 && (
                 <ul>
@@ -366,8 +296,8 @@ const CalorieCalculator = () => {
               )}
             </p>
             <p><strong>Lunch:</strong> {(calories * 0.30).toFixed(2)} kcal
-              <p><Button onClick={() => makeLaunchList(calories * 0.30)}>
-                makeLaunchList
+              <p><Button onClick={() => fetchMeals('https://v1.nocodeapi.com/yahay/google_sheets/pqHSFrSugOJqIfCt?tabId=sayfa1', 'Lunch', calories * 0.30)}>
+                Make Lunch List
               </Button></p>
               {lunchList.length > 0 && (
                 <ul>
@@ -378,8 +308,8 @@ const CalorieCalculator = () => {
               )}
             </p>
             <p><strong>Dinner:</strong> {(calories * 0.30).toFixed(2)} kcal
-              <p><Button onClick={() => makeDinnerList(calories * 0.30)}>
-                makeDinnerList
+              <p><Button onClick={() => fetchMeals('https://v1.nocodeapi.com/yahay/google_sheets/SUmYpLRIPwrUEijD?tabId=sayfa1', 'Dinner', calories * 0.30)}>
+                Make Dinner List
               </Button></p>
               {dinnerList.length > 0 && (
                 <ul>
@@ -390,8 +320,8 @@ const CalorieCalculator = () => {
               )}
             </p>
             <p><strong>Snacks:</strong> {(calories * 0.15).toFixed(2)} kcal
-              <p><Button onClick={() => makeSnacksList(calories * 0.15)}>
-                makeSnacksList
+              <p><Button onClick={() => fetchMeals('https://v1.nocodeapi.com/yahay/google_sheets/AznBYZtifIeenXaf?tabId=sayfa1', 'Snacks', calories * 0.15)}>
+                Make Snacks List
               </Button></p>
               {snacksList.length > 0 && (
                 <ul>
@@ -407,6 +337,31 @@ const CalorieCalculator = () => {
           </div>
         )}
       </Card>
+      <Modal
+        title={`Select ${modalType}`}
+        visible={visibleModal}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        okText="Save"
+        cancelText="Cancel"
+      >
+        <p>Calorie Limit: {calorieLimit} kcal</p>
+        <Checkbox.Group
+          value={selectedMeals}
+          onChange={handleMealSelection}
+        >
+          {mealOptions.map((meal) => (
+            <Checkbox 
+              key={meal.Besin} 
+              value={meal} 
+              disabled={disabledOptions.includes(meal.Besin)}
+            >
+              {<p1>{meal.Besin}: {meal.Porsiyon_Miktari}: {meal.Kalori_Miktari} kcal</p1>}
+            </Checkbox>
+          ))}
+        </Checkbox.Group>
+        <p>Total Calories: {totalSelectedCalories} kcal</p>
+      </Modal>
     </div>
   );
 };

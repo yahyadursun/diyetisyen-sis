@@ -1,6 +1,6 @@
 import React from 'react';
 import { Layout, Menu} from 'antd';
-import { HomeOutlined, LoginOutlined, UserAddOutlined, LogoutOutlined, HeartFilled } from '@ant-design/icons';
+import { HomeOutlined, LoginOutlined, UserAddOutlined} from '@ant-design/icons';
 import { Route, Routes, useNavigate, useLocation } from "react-router-dom";
 import Login from '../components/Auth/Login';
 import Register from '../components/Register';

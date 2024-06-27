@@ -1,7 +1,5 @@
 import React from 'react';
 import { Layout, Menu } from 'antd';
-import { HomeOutlined, LogoutOutlined, HeartFilled } from '@ant-design/icons';
-import { useNavigate } from "react-router-dom";
 import Logout from '../components/Auth/Logout';
 import CalorieCalculator from '../components/CalorieCalculator';
 import './Logged_in_page.css'; // Import the custom CSS
@@ -9,7 +7,6 @@ import './Logged_in_page.css'; // Import the custom CSS
 const { Header, Content } = Layout;
 
 const Logged_in_page = () => {
-  const navigate = useNavigate();
 
   return (
     <Layout className="main-layout">
