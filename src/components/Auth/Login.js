@@ -1,8 +1,9 @@
-import React, { useContext,useState } from 'react';
-import { Button, Form, Input, Typography, Row, Col, message } from 'antd';
+import React, { useContext, useState } from 'react';
+import { Button, Form, Input, Typography, Row, Col, message, Card } from 'antd';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from './AuthContext';
+import './Login.css'; // Import the custom CSS for styling
 
 const { Title } = Typography;
 
@@ -44,29 +45,50 @@ const Login = () => {
   };
 
   return (
-    <Row justify="center" align="middle" style={{ height: '100vh' }}>
-      <Col>
-        <div style={{ padding: '40px', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0,0,0,0.1)', backgroundColor: '#fff' }}>
-          <Title level={2} style={{ textAlign: 'center' }}>Login</Title>
+    <Row justify="center" align="middle" className="login-container">
+      <Col xs={22} sm={16} md={12} lg={8}>
+        <Card className="login-card">
+          <Title level={2} className="login-title">Login</Title>
           <Form
             onFinish={handleLogin}
             autoComplete="off"
+            layout="vertical"
+            style={{ marginTop: '20px' }}
           >
-            <Form.Item label="Username" name="username" rules={[{ required: true, message: 'Please input your username!' }]}>
-              <Input name="username" value={formData.username} onChange={handleChange} />
+            <Form.Item
+              label="Username"
+              name="username"
+              rules={[{ required: true, message: 'Please input your username!' }]}
+            >
+              <Input
+                name="username"
+                value={formData.username}
+                onChange={handleChange}
+                size="large"
+              />
             </Form.Item>
 
-            <Form.Item label="Password" name="password" rules={[{ required: true, message: 'Please input your password!' }]}>
-              <Input.Password name="password" value={formData.password} onChange={handleChange} />
+            <Form.Item
+              label="Password"
+              name="password"
+              rules={[{ required: true, message: 'Please input your password!' }]}
+            >
+              <Input.Password
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                size="large"
+              />
             </Form.Item>
 
-            <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-              <Button type="primary" htmlType="submit" style={{ width: '100%' }}>
+            <Form.Item>
+              <Button type="primary" htmlType="submit" size="large" className="login-button">
                 Login
               </Button>
             </Form.Item>
+            
           </Form>
-        </div>
+        </Card>
       </Col>
     </Row>
   );

@@ -1,3 +1,5 @@
+// CalorieCalculator.js
+
 import React, { useState } from 'react';
 import { Form, Input, Button, Typography, Row, Col, Select, Card, Divider, message, Modal, Checkbox } from 'antd';
 import './CalorieCalculator.css'; // Import custom CSS for styling
@@ -136,7 +138,7 @@ const CalorieCalculator = () => {
   const fetchMeals = (url, type, limitCalories) => {
     if (isFetching) return;
     setIsFetching(true);
-    setCalorieLimit((limitCalories+25).toFixed(2)); // Set calorie limit for the modal // additional +25 calorie for making things easy
+    setCalorieLimit((limitCalories + 25).toFixed(2)); // Set calorie limit for the modal // additional +25 calorie for making things easy
 
     axios({
       method: 'get',
@@ -201,28 +203,8 @@ const CalorieCalculator = () => {
   };
 
   return (
-    <div className="calorie-calculator-container" 
-      style={{backgroundImage: 'url(background.png)',
-      backgroundRepeat: 'no-repeat',
-      backgroundPosition: 'center',
-      backgroundSize: 'cover',
-      width: '90%',
-      height: '50vh',
-      margin: '0',
-      padding: '0'}}>
-      <h1 style={{
-          fontSize: '48px',
-          fontWeight: 'bold',
-          color: '#4A90E2',
-          textShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)',
-          padding: '20px',
-          border: '3px solid #4A90E2',
-          borderRadius: '10px',
-          textAlign: 'center',
-          backgroundColor: '#F0F8FF'
-        }}>
-        Welcome, {username}!
-        </h1>
+    <div className="calorie-calculator-container">
+      <h1>Welcome {username}!</h1>
       <Card className="calorie-calculator-card" bordered={false}>
         <Title level={3} className="title">Daily Calorie Calculator</Title>
         <Form form={form} onFinish={onFinish} layout="vertical">
@@ -261,7 +243,7 @@ const CalorieCalculator = () => {
                 initialValue="male"
                 rules={[{ required: true, message: 'Please select your gender!' }]}
               >
-                <Select className="select">
+                <Select>
                   <Option value="male">Male</Option>
                   <Option value="female">Female</Option>
                 </Select>
@@ -283,54 +265,61 @@ const CalorieCalculator = () => {
         )}
         {calories && (
           <div className="result">
+            <div>
             <p><strong>Breakfast:</strong> {(calories * 0.25).toFixed(2)} kcal 
-              <p><Button onClick={() => fetchMeals('https://v1.nocodeapi.com/yahay/google_sheets/KsgLmdaJtmoQSSWI?tabId=sayfa1', 'Breakfast', calories * 0.25)}>
+              <p><Button onClick={() => fetchMeals('https://v1.nocodeapi.com/yahay/google_sheets/KsgLmdaJtmoQSSWI?tabId=sayfa1', 'Breakfast', calories * 0.25)} className="calculate-button">
                 Make Breakfast List
               </Button></p>
               {breakfastList.length > 0 && (
-                <ul>
+                <ul style={{ fontSize: '15px' }}>
                   {breakfastList.map((meal, index) => (
                     <li key={index}>{meal.Besin}: {meal.Porsiyon_Miktari}: {meal.Kalori_Miktari} kcal</li>
                   ))}
                 </ul>
               )}
             </p>
-            <p><strong>Lunch:</strong> {(calories * 0.30).toFixed(2)} kcal
-              <p><Button onClick={() => fetchMeals('https://v1.nocodeapi.com/yahay/google_sheets/pqHSFrSugOJqIfCt?tabId=sayfa1', 'Lunch', calories * 0.30)}>
+            </div>
+            <div><p><strong>Lunch:</strong> {(calories * 0.30).toFixed(2)} kcal
+              <p><Button onClick={() => fetchMeals('https://v1.nocodeapi.com/yahay/google_sheets/pqHSFrSugOJqIfCt?tabId=sayfa1', 'Lunch', calories * 0.30)} className="calculate-button">
                 Make Lunch List
               </Button></p>
               {lunchList.length > 0 && (
-                <ul>
+                <ul style={{ fontSize: '15px' }}>
                   {lunchList.map((meal, index) => (
                     <li key={index}>{meal.Besin}: {meal.Porsiyon_Miktari}:  {meal.Kalori_Miktari} kcal</li>
                   ))}
                 </ul>
               )}
             </p>
+            </div>
+            <div>
             <p><strong>Dinner:</strong> {(calories * 0.30).toFixed(2)} kcal
-              <p><Button onClick={() => fetchMeals('https://v1.nocodeapi.com/yahay/google_sheets/SUmYpLRIPwrUEijD?tabId=sayfa1', 'Dinner', calories * 0.30)}>
+              <p><Button onClick={() => fetchMeals('https://v1.nocodeapi.com/yahay/google_sheets/SUmYpLRIPwrUEijD?tabId=sayfa1', 'Dinner', calories * 0.30)} className="calculate-button">
                 Make Dinner List
               </Button></p>
               {dinnerList.length > 0 && (
-                <ul>
+                <ul style={{ fontSize: '15px' }}>
                   {dinnerList.map((meal, index) => (
                     <li key={index}>{meal.Besin}:  {meal.Porsiyon_Miktari}:  {meal.Kalori_Miktari} kcal</li>
                   ))}
                 </ul>
               )}
             </p>
+            </div>
+            <div>
             <p><strong>Snacks:</strong> {(calories * 0.15).toFixed(2)} kcal
-              <p><Button onClick={() => fetchMeals('https://v1.nocodeapi.com/yahay/google_sheets/AznBYZtifIeenXaf?tabId=sayfa1', 'Snacks', calories * 0.15)}>
+              <p><Button onClick={() => fetchMeals('https://v1.nocodeapi.com/yahay/google_sheets/AznBYZtifIeenXaf?tabId=sayfa1', 'Snacks', calories * 0.15)} className="calculate-button">
                 Make Snacks List
               </Button></p>
               {snacksList.length > 0 && (
-                <ul>
+                <ul style={{ fontSize: '15px' }}>
                   {snacksList.map((meal, index) => (
                     <li key={index}>{meal.Besin}:  {meal.Porsiyon_Miktari}:  {meal.Kalori_Miktari} kcal</li>
                   ))}
                 </ul>
               )}
             </p>
+            </div>
             <p><strong>Daily Calorie Requirement:</strong> {calories} kcal</p>
             <p><AlertButton></AlertButton></p>
             <p><AlertButtonUser_info></AlertButtonUser_info></p>
@@ -356,7 +345,7 @@ const CalorieCalculator = () => {
               value={meal} 
               disabled={disabledOptions.includes(meal.Besin)}
             >
-              {<p1>{meal.Besin}: {meal.Porsiyon_Miktari}: {meal.Kalori_Miktari} kcal</p1>}
+              {<p>{meal.Besin}: {meal.Porsiyon_Miktari}: {meal.Kalori_Miktari} kcal</p>}
             </Checkbox>
           ))}
         </Checkbox.Group>

@@ -1,37 +1,96 @@
-/* Custom styles for the LandingPage */
+/* Landing_page.css */
 
 .site-layout-background {
-    background: #fff;
+  background: #001529; /* Ant Design dark theme */
+  color: #fff;
+}
+
+.site-content {
+  margin: 16px;
+  padding: 24px;
+  background: #fff;
+  min-height: 360px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.home-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: url('https://source.unsplash.com/random/1920x1080?diet,health') no-repeat center center;
+  background-size: cover;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}
+
+.welcome-message {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  color: #fff;
+  font-size: 3rem;
+  font-weight: bold;
+  animation: fadeIn 3s ease-in-out, moveUp 3s ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes moveUp {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0); }
+}
+
+.ant-layout-sider {
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+}
+
+.ant-menu-dark .ant-menu-item-selected {
+  background: linear-gradient(135deg, #ff4e50, #f9d423) !important;
+  color: #fff;
+}
+
+.ant-menu-item {
+  display: flex;
+  align-items: center;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.ant-menu-item:hover {
+  background: linear-gradient(135deg, #ff4e50, #f9d423) !important;
+  color: #fff !important;
+}
+
+.ant-menu-item-icon {
+  margin-right: 8px;
+}
+
+.ant-layout {
+  background: #f0f2f5;
+}
+
+@media (max-width: 768px) {
+  .site-content {
+    margin: 8px;
+    padding: 16px;
   }
-  
-  .ant-layout-sider {
-    background: #001529;
+
+  .welcome-message {
+    font-size: 1.5rem;
   }
-  
-  .ant-menu-dark .ant-menu-item-selected {
-    background-color: #1890ff;
-  }
-  
-  .ant-menu-item {
-    display: flex;
-    align-items: center;
-  }
-  
-  .ant-layout-content {
-    background: #f0f2f5;
-    padding: 24px;
-    margin: 0;
-    min-height: 280px;
-  }
-  
-  .ant-layout-header {
-    background: #fff;
-    padding: 0;
-  }
-  
-  @media (max-width: 768px) {
-    .ant-layout-sider {
-      display: none;
-    }
-  }
-  
+}

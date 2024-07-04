@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { Button, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from './AuthContext';
+import '../CalorieCalculator.css'; // Import custom CSS for styling
 const Logout = () => {
   const { logout} = useContext(AuthContext);
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ const Logout = () => {
   };
 
   return (
-    <Button type="primary" onClick={handleLogout}>
+    <Button type="primary" onClick={handleLogout}  className="calculate-button">
       Logout
     </Button>
   );

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Button, Form, Input, Typography, Row, Col, message } from 'antd';
+import { Button, Form, Input, Typography, Row, Col, message, Card } from 'antd';
 import axios from 'axios';
+import './Register.css'; // Import the custom CSS for styling
 
 const { Title } = Typography;
 
@@ -12,6 +13,7 @@ const Register = () => {
     email: '',
     password: '',
   });
+
   const addData = () => {
     axios({
       method: "post",
@@ -22,11 +24,11 @@ const Register = () => {
         // Registration successful
         message.success("Registration successful");
         setFormData({
-            username: '',
-            name: '',
-            surname: '',
-            email: '',
-            password: '',
+          username: '',
+          name: '',
+          surname: '',
+          email: '',
+          password: '',
         });
       })
       .catch((error) => {
@@ -34,46 +36,94 @@ const Register = () => {
         message.error("Registration failed");
       });
   };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
   return (
-    <Row justify="center" align="middle" style={{ height: '100vh'}}>
-      <Col style={{height:'100vh'}}>
-        <div style={{ padding: '40px', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0,0,0,0.1)', backgroundColor: '#fff' }}>
-          <Title level={2} style={{ textAlign: 'center', fontSize: '36px', fontWeight: 'bold', color: '#333' }}>Register</Title>
-
-          <Form 
-          onFinish={addData} 
-          autoComplete="off">
-            <Form.Item label="Username" name="username" rules={[{ required: true, message: 'Please input your username!' }]}>
-              <Input name="username" value={formData.username} onChange={handleChange} />
+    <Row justify="center" align="middle" className="register-container">
+      <Col xs={22} sm={16} md={12} lg={8}>
+        <Card className="register-card">
+          <Title level={2} className="register-title">Register</Title>
+          <Form
+            onFinish={addData}
+            autoComplete="off"
+            layout="vertical"
+            style={{ marginTop: '20px' }}
+          >
+            <Form.Item
+              label="Username"
+              name="username"
+              rules={[{ required: true, message: 'Please input your username!' }]}
+            >
+              <Input
+                name="username"
+                value={formData.username}
+                onChange={handleChange}
+                size="large"
+              />
             </Form.Item>
 
-            <Form.Item label="Name" name="name" rules={[{ required: true, message: 'Please input your name!' }]}>
-              <Input name="name" value={formData.name} onChange={handleChange} />
+            <Form.Item
+              label="Name"
+              name="name"
+              rules={[{ required: true, message: 'Please input your name!' }]}
+            >
+              <Input
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                size="large"
+              />
             </Form.Item>
 
-            <Form.Item label="Surname" name="surname" rules={[{ required: true, message: 'Please input your surname!' }]}>
-              <Input  name="surname" value={formData.surname} onChange={handleChange} />
+            <Form.Item
+              label="Surname"
+              name="surname"
+              rules={[{ required: true, message: 'Please input your surname!' }]}
+            >
+              <Input
+                name="surname"
+                value={formData.surname}
+                onChange={handleChange}
+                size="large"
+              />
             </Form.Item>
 
-            <Form.Item label="Email" name="email" rules={[{ required: true, message: 'Please input your email!', type: 'email' }]}>
-              <Input name="email" value={formData.email} onChange={handleChange} />
+            <Form.Item
+              label="Email"
+              name="email"
+              rules={[{ required: true, message: 'Please input your email!', type: 'email' }]}
+            >
+              <Input
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                size="large"
+              />
             </Form.Item>
 
-            <Form.Item label="Password" name="password" rules={[{ required: true, message: 'Please input your password!' }]}>
-              <Input.Password name="password" value={formData.password} onChange={handleChange} />
+            <Form.Item
+              label="Password"
+              name="password"
+              rules={[{ required: true, message: 'Please input your password!' }]}
+            >
+              <Input.Password
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                size="large"
+              />
             </Form.Item>
-            <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-              <Button type="primary"  htmlType="submit" style={{ width: '100%' }}>
+            <Form.Item>
+              <Button type="primary" htmlType="submit" size="large" className="register-button">
                 Register
               </Button>
             </Form.Item>
           </Form>
-        </div>
+        </Card>
       </Col>
     </Row>
   );

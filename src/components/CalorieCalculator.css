@@ -1,217 +1,134 @@
+/* CalorieCalculator.css */
+
 .calorie-calculator-container {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #f9f9f9;
-  }
-  
-  .result {
-    margin-top: 16px;
-    font-weight: bold;
-  }
-  .calorie-calculator-container {
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .result {
-    margin-top: 20px;
-    font-size: 16px;
-  }
-  .calorie-calculator-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #f0f2f5;
-  }
-  
-  .calorie-calculator-card {
-    width: 600px;
-    padding: 20px;
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .title {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  .input-row {
-    margin-bottom: 20px;
-  }
-  
-  .input-number, .select {
-    width: 100%;
-  }
-  
-  .calculate-button {
-    display: block;
-    width: 100%;
-    margin-top: 20px;
-  }
-  
-  .result {
-    margin-top: 20px;
-    padding: 20px;
-    background-color: #e6f7ff;
-    border-radius: 5px;
-    text-align: center;
-  }
-  .calorie-calculator-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
-    min-height: 100vh;
-  }
-  
-  .calorie-calculator-card {
-    width: 100%;
-    max-width: 800px;
-    background: #ffffff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-    padding: 20px;
-    margin-top: 20px;
-  }
-  
-  .title {
-    text-align: center;
-    color: #333;
-  }
-  
-  .input-row {
-    margin-top: 20px;
-  }
-  
-  .input-number, .select {
-    width: 100%;
-  }
-  
-  .calculate-button {
-    width: 100%;
-    background-color: #4caf50;
-    border-color: #4caf50;
-  }
-  
-  .calculate-button:hover {
-    background-color: #45a049;
-    border-color: #45a049;
-  }
-  
-  .result {
-    margin-top: 20px;
-    padding: 20px;
-    background: #f0f9ff;
-    border-radius: 10px;
-    text-align: center;
-  }
-  
-  .result p {
-    margin: 10px 0;
-    color: #333;
-  }
-  
-  .result strong {
-    color: #007acc;
-  }
-  .calorie-calculator-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-  }
-  
-  .calorie-calculator-card {
-    width: 80%;
-    max-width: 1200px;
-  }
-  
-  .title {
-    text-align: center;
-  }
-  
-  .input-row {
-    display: flex;
-    justify-content: space-between;
-  }
-  
-  .input-number, .select {
-    width: 100%;
-  }
-  
-  .calculate-button {
-    display: block;
-    width: 100%;
-    text-align: center;
-  }
-  
-  .result {
-    margin-top: 20px;
-    text-align: center;
-  }
-  
-  .result ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .result ul li {
-    text-align: left;
-  }
-  .calorie-calculator-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    width: 100%;
-  }
-  
-  .calorie-calculator-card {
-    width: 100%;
-    max-width: 1200px;
-  }
-  
-  .title {
-    text-align: center;
-  }
-  
-  .input-row {
-    display: flex;
-    justify-content: space-between;
-  }
-  
-  .input-number, .select {
-    width: 100%;
-  }
-  
-  .calculate-button {
-    display: block;
-    width: 100%;
-    text-align: center;
-  }
-  
-  .result {
-    margin-top: 20px;
-    text-align: center;
-  }
-  
-  .result ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .result ul li {
-    text-align: left;
-  }
-  
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background: linear-gradient(to right, #ff7e5f, #feb47b);
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  color: #fff;
+  text-align: center;
+}
+
+h1 {
+  font-size: 2.5rem;
+  color: #fff;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.calorie-calculator-card {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.title {
+  color: #fff;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.input-row .ant-form-item-label > label {
+  color: #fff;
+}
+
+.calculate-button,
+.alert-button-container button {
+  background: linear-gradient(to right, #6a11cb, #2575fc);
+  border: none;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  transition: background 0.5s ease;
+}
+
+.calculate-button:hover,
+.alert-button-container button:hover {
+  background: linear-gradient(to right, #2575fc, #6a11cb);
+}
+
+.result {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.result > div {
+  flex: 1 1 45%;
+  background: rgba(255, 255, 255, 0.2);
+  margin: 10px;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: left;
+}
+
+.result p {
+  color: #fff;
+  font-size: 1.2rem;
+}
+
+.result ul {
+  list-style: none;
+  padding: 0;
+}
+
+.result ul li {
+  background: rgba(255, 255, 255, 0.2);
+  margin: 5px 0;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.ant-modal-content {
+  background: linear-gradient(to right, #ff7e5f, #feb47b);
+  color: #fff;
+}
+
+.ant-modal-title {
+  color: #fff;
+}
+
+.ant-checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ant-checkbox-wrapper {
+  color: #fff;
+}
+
+.ant-checkbox-checked .ant-checkbox-inner {
+  background-color: #6a11cb;
+  border-color: #6a11cb;
+}
+
+.ant-checkbox-checked::after {
+  border-color: #6a11cb;
+}
+
+.ant-modal-footer .ant-btn {
+  border-radius: 5px;
+  transition: background 0.5s ease;
+}
+
+.ant-modal-footer .ant-btn-primary {
+  background: linear-gradient(to right, #6a11cb, #2575fc);
+  border: none;
+  color: #fff;
+}
+
+.ant-modal-footer .ant-btn-primary:hover {
+  background: linear-gradient(to right, #2575fc, #6a11cb);
+}
+
+.ant-modal-footer .ant-btn-default {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  border: none;
+}
+
+.ant-modal-footer .ant-btn-default:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
