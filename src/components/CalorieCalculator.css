@@ -4,7 +4,7 @@
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
-  background: linear-gradient(to right, #ff7e5f, #feb47b);
+  background: linear-gradient(to right, #6c21ce, #25d1fc);
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   color: #fff;
@@ -34,7 +34,7 @@ h1 {
 
 .calculate-button,
 .alert-button-container button {
-  background: linear-gradient(to right, #6a11cb, #2575fc);
+  background: linear-gradient(to right, #42a5f5, #5b86e5);
   border: none;
   color: #fff;
   padding: 10px 20px;
@@ -44,7 +44,7 @@ h1 {
 
 .calculate-button:hover,
 .alert-button-container button:hover {
-  background: linear-gradient(to right, #2575fc, #6a11cb);
+  background: linear-gradient(to right, #5b86e5, #42a5f5);
 }
 
 .result {
@@ -81,7 +81,7 @@ h1 {
 }
 
 .ant-modal-content {
-  background: linear-gradient(to right, #ff7e5f, #feb47b);
+  background: linear-gradient(to right, #6a11cb, #2575fc);
   color: #fff;
 }
 
@@ -100,12 +100,12 @@ h1 {
 }
 
 .ant-checkbox-checked .ant-checkbox-inner {
-  background-color: #6a11cb;
-  border-color: #6a11cb;
+  background-color: #42a5f5;
+  border-color: #42a5f5;
 }
 
 .ant-checkbox-checked::after {
-  border-color: #6a11cb;
+  border-color: #42a5f5;
 }
 
 .ant-modal-footer .ant-btn {
@@ -114,13 +114,13 @@ h1 {
 }
 
 .ant-modal-footer .ant-btn-primary {
-  background: linear-gradient(to right, #6a11cb, #2575fc);
+  background: linear-gradient(to right, #42a5f5, #5b86e5);
   border: none;
   color: #fff;
 }
 
 .ant-modal-footer .ant-btn-primary:hover {
-  background: linear-gradient(to right, #2575fc, #6a11cb);
+  background: linear-gradient(to right, #5b86e5, #42a5f5);
 }
 
 .ant-modal-footer .ant-btn-default {
@@ -131,4 +131,12 @@ h1 {
 
 .ant-modal-footer .ant-btn-default:hover {
   background: rgba(255, 255, 255, 0.4);
+}
+
+
+.ant-btn-primary {
+  background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+  border: none;
+  box-shadow: 0 4px 15px rgba(0, 242, 254, 0.3);
+  transition: all 0.3s ease;
 }

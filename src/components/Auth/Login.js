@@ -1,9 +1,11 @@
 import React, { useContext, useState } from 'react';
 import { Button, Form, Input, Typography, Row, Col, message, Card } from 'antd';
+import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from './AuthContext';
-import './Login.css'; // Import the custom CSS for styling
+import { useSpring, animated } from 'react-spring';
+import './Login.css';
 
 const { Title } = Typography;
 
@@ -15,6 +17,12 @@ const Login = () => {
   });
 
   const navigate = useNavigate();
+
+  const fadeIn = useSpring({
+    from: { opacity: 0, transform: 'translateY(50px)' },
+    to: { opacity: 1, transform: 'translateY(0)' },
+    config: { duration: 1000 },
+  });
 
   const handleLogin = () => {
     axios({
@@ -47,48 +55,51 @@ const Login = () => {
   return (
     <Row justify="center" align="middle" className="login-container">
       <Col xs={22} sm={16} md={12} lg={8}>
-        <Card className="login-card">
-          <Title level={2} className="login-title">Login</Title>
-          <Form
-            onFinish={handleLogin}
-            autoComplete="off"
-            layout="vertical"
-            style={{ marginTop: '20px' }}
-          >
-            <Form.Item
-              label="Username"
-              name="username"
-              rules={[{ required: true, message: 'Please input your username!' }]}
+        <animated.div style={fadeIn}>
+          <Card className="login-card" hoverable>
+            <Title level={2} className="login-title">Welcome Back</Title>
+            <Form
+              onFinish={handleLogin}
+              autoComplete="off"
+              layout="vertical"
+              style={{ marginTop: '20px' }}
             >
-              <Input
+              <Form.Item
                 name="username"
-                value={formData.username}
-                onChange={handleChange}
-                size="large"
-              />
-            </Form.Item>
+                rules={[{ required: true, message: 'Please input your username!' }]}
+              >
+                <Input
+                  prefix={<UserOutlined className="site-form-item-icon" />}
+                  name="username"
+                  placeholder="Username"
+                  value={formData.username}
+                  onChange={handleChange}
+                  size="large"
+                />
+              </Form.Item>
 
-            <Form.Item
-              label="Password"
-              name="password"
-              rules={[{ required: true, message: 'Please input your password!' }]}
-            >
-              <Input.Password
+              <Form.Item
                 name="password"
-                value={formData.password}
-                onChange={handleChange}
-                size="large"
-              />
-            </Form.Item>
+                rules={[{ required: true, message: 'Please input your password!' }]}
+              >
+                <Input.Password
+                  prefix={<LockOutlined className="site-form-item-icon" />}
+                  name="password"
+                  placeholder="Password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  size="large"
+                />
+              </Form.Item>
 
-            <Form.Item>
-              <Button type="primary" htmlType="submit" size="large" className="login-button">
-                Login
-              </Button>
-            </Form.Item>
-            
-          </Form>
-        </Card>
+              <Form.Item>
+                <Button type="primary" htmlType="submit" size="large" className="login-button" block>
+                  Log in
+                </Button>
+              </Form.Item>
+            </Form>
+          </Card>
+        </animated.div>
       </Col>
     </Row>
   );

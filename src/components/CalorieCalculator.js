@@ -1,8 +1,6 @@
-// CalorieCalculator.js
-
-import React, { useState } from 'react';
-import { Form, Input, Button, Typography, Row, Col, Select, Card, Divider, message, Modal, Checkbox } from 'antd';
-import './CalorieCalculator.css'; // Import custom CSS for styling
+import React, { useState, useEffect } from 'react';
+import { Form, Input, Button, Typography, Row, Col, Select, Card, Divider, message, Modal, Checkbox, Spin } from 'antd';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import axios from 'axios';
 
 const { Title } = Typography;
@@ -13,64 +11,33 @@ const CalorieCalculator = () => {
   const [bmi, setBMI] = useState(null);
   const [calories, setCalories] = useState(null);
   const [bmiCategory, setBMICategory] = useState('');
-  const username = localStorage.getItem('username');
+  const [username, setUsername] = useState('');
   const [formData, setFormData] = useState({
-    username: username,
     weight: '',
     height: '',
     age: '',
   });
 
   const [isFetching, setIsFetching] = useState(false);
-  const [breakfastList, setBreakfastList] = useState([]);
-  const [lunchList, setLunchList] = useState([]);
-  const [dinnerList, setDinnerList] = useState([]);
-  const [snacksList, setSnacksList] = useState([]);
+  const [mealLists, setMealLists] = useState({
+    breakfast: [],
+    lunch: [],
+    dinner: [],
+    snacks: [],
+  });
   const [visibleModal, setVisibleModal] = useState(false);
   const [modalType, setModalType] = useState('');
   const [mealOptions, setMealOptions] = useState([]);
   const [selectedMeals, setSelectedMeals] = useState([]);
   const [totalSelectedCalories, setTotalSelectedCalories] = useState(0);
   const [calorieLimit, setCalorieLimit] = useState(0);
-  const [disabledOptions, setDisabledOptions] = useState([]);
 
-  const AlertButton = () => {
-    const showAlert = () => {
-      message.success('Lists Mail Sent');
-    };
-
-    return (
-      <div className="alert-button-container">
-        <Button type="primary" onClick={showAlert}>
-          Send Lists As A Mail
-        </Button>
-      </div>
-    );
-  };
-
-  const AlertButtonUser_info = () => {
-    const showAlert = () => {
-      message.success('User physique info Mail Sent');
-    };
-
-    return (
-      <div className="alert-button-container">
-        <Button type="primary" onClick={showAlert}>
-          Send Physique Info Mail
-        </Button>
-      </div>
-    );
-  };
-
-  const validateInputs = () => {
-    try {
-      form.validateFields();
-      return true;
-    } catch (error) {
-      message.error('Please enter valid values for weight, height, and age.');
-      return false;
+  useEffect(() => {
+    const storedUsername = localStorage.getItem('username');
+    if (storedUsername) {
+      setUsername(storedUsername);
     }
-  };
+  }, []);
 
   const calculateCalories = (values) => {
     const { weight, height, age, gender } = values;
@@ -79,76 +46,46 @@ const CalorieCalculator = () => {
     setBMI(calculatedBMI.toFixed(2));
 
     let category = '';
-    if (calculatedBMI < 18.5) {
-      category = 'Underweight';
-    } else if (calculatedBMI >= 18.5 && calculatedBMI <= 24.9) {
-      category = 'Normal weight';
-    } else if (calculatedBMI >= 25 && calculatedBMI <= 29.9) {
-      category = 'Overweight';
-    } else {
-      category = 'Obese';
-    }
+    if (calculatedBMI < 18.5) category = 'Underweight';
+    else if (calculatedBMI >= 18.5 && calculatedBMI <= 24.9) category = 'Normal weight';
+    else if (calculatedBMI >= 25 && calculatedBMI <= 29.9) category = 'Overweight';
+    else category = 'Obese';
     setBMICategory(category);
 
     const bmr = gender === 'male'
       ? 10 * weight + 6.25 * height - 5 * age + 5
       : 10 * weight + 6.25 * height - 5 * age - 161;
 
-    const calculatedCalories =
-      calculatedBMI < 18.5
-        ? bmr * 1.2
-        : calculatedBMI >= 18.5 && calculatedBMI <= 24.9
-        ? bmr * 1.375
-        : calculatedBMI >= 25 && calculatedBMI <= 29.9
-        ? bmr * 1.55
-        : bmr * 1.725;
+    const calculatedCalories = bmr * (calculatedBMI < 18.5 ? 1.2 : calculatedBMI <= 24.9 ? 1.375 : calculatedBMI <= 29.9 ? 1.55 : 1.725);
 
     setCalories(calculatedCalories.toFixed(2));
-
-    addData();
+    addData(values);
   };
 
-  const addData = () => {
-    axios({
-      method: "post",
-      url: "https://v1.nocodeapi.com/yahay/google_sheets/gqWwMrQxAsUTFzRo?tabId=sayfa1",
-      data: [Object.values(formData)],  // Fix the format here
-    })
-      .then((response) => {
-        console.log(response);  // Log the response for debugging
-        message.success("Data added successfully");
-      })
+  const addData = (values) => {
+    const dataToAdd = { ...values, username };
+    axios.post("https://v1.nocodeapi.com/yahay/google_sheets/gqWwMrQxAsUTFzRo?tabId=sayfa1", [Object.values(dataToAdd)])
+      .then(() => message.success("Data added successfully"))
       .catch((error) => {
-        console.error('Error adding data:', error.response ? error.response.data : error.message);  // Log detailed error
+        console.error('Error adding data:', error);
         message.error("Failed to add data");
       });
   };
 
   const onFinish = (values) => {
-    if (validateInputs()) {
-      calculateCalories(values);
-    }
+    calculateCalories(values);
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const fetchMeals = (url, type, limitCalories) => {
+  const fetchMeals = (url, type) => {
     if (isFetching) return;
     setIsFetching(true);
-    setCalorieLimit((limitCalories + 25).toFixed(2)); // Set calorie limit for the modal // additional +25 calorie for making things easy
+    const limitCalories = calories * (type === 'Breakfast' ? 0.25 : type === 'Snacks' ? 0.15 : 0.30);
+    setCalorieLimit((limitCalories + 25).toFixed(2));
 
-    axios({
-      method: 'get',
-      url,
-    })
+    axios.get(url)
       .then((response) => {
         const meals = response.data.data;
-
         if (meals && meals.length > 0) {
-          message.success(`API fetched for ${type}`);
           setMealOptions(meals);
           setModalType(type);
           setVisibleModal(true);
@@ -156,87 +93,64 @@ const CalorieCalculator = () => {
           message.error('No meals found or invalid data');
         }
       })
-      .catch(() => {
-        message.error('Login failed');
-      })
-      .finally(() => {
-        setIsFetching(false);
-      });
+      .catch(() => message.error('Failed to fetch meals'))
+      .finally(() => setIsFetching(false));
   };
 
   const handleMealSelection = (selected) => {
-    let totalCalories = 0;
-    selected.forEach(meal => {
-      totalCalories += parseInt(meal.Kalori_Miktari);
-    });
-
+    const totalCalories = selected.reduce((sum, meal) => sum + parseInt(meal.Kalori_Miktari), 0);
     if (totalCalories <= calorieLimit) {
       setSelectedMeals(selected);
       setTotalSelectedCalories(totalCalories);
-      setDisabledOptions([]);
     } else {
       message.error('Selected meals exceed the calorie limit!');
-      const disabledMealLabels = selected.filter(meal => !selectedMeals.includes(meal)).map(meal => meal.Besin);
-      setDisabledOptions(disabledMealLabels);
     }
   };
 
-  const handleOk = () => {
-    if (modalType === 'Breakfast') {
-      setBreakfastList(selectedMeals);
-    } else if (modalType === 'Lunch') {
-      setLunchList(selectedMeals);
-    } else if (modalType === 'Dinner') {
-      setDinnerList(selectedMeals);
-    } else if (modalType === 'Snacks') {
-      setSnacksList(selectedMeals);
-    }
+  const handleModalOk = () => {
+    setMealLists(prev => ({ ...prev, [modalType.toLowerCase()]: selectedMeals }));
     setVisibleModal(false);
     setSelectedMeals([]);
     setTotalSelectedCalories(0);
   };
 
-  const handleCancel = () => {
+  const handleModalCancel = () => {
     setVisibleModal(false);
     setSelectedMeals([]);
     setTotalSelectedCalories(0);
   };
+
+  const sendEmail = (type) => {
+    // Implement email sending logic here
+    message.success(`${type} sent as an email`);
+  };
+
+  const mealData = [
+    { name: 'Breakfast', calories: calories ? calories * 0.25 : 0 },
+    { name: 'Lunch', calories: calories ? calories * 0.30 : 0 },
+    { name: 'Dinner', calories: calories ? calories * 0.30 : 0 },
+    { name: 'Snacks', calories: calories ? calories * 0.15 : 0 },
+  ];
 
   return (
     <div className="calorie-calculator-container">
-      <h1>Welcome {username}!</h1>
+      <Title level={2}>Welcome {username}!</Title>
       <Card className="calorie-calculator-card" bordered={false}>
-        <Title level={3} className="title">Daily Calorie Calculator</Title>
+        <Title level={3}>Daily Calorie Calculator</Title>
         <Form form={form} onFinish={onFinish} layout="vertical">
-          <Row gutter={[16, 16]} className="input-row">
-            <Col xs={24} sm={12} md={6}>
-              <Form.Item
-                label="Weight (kg)"
-                name="weight"
-                rules={[{ required: true, message: 'Please input your weight!' }]}
-              >
-                <Input name="weight" value={formData.weight} onChange={handleChange} className="input-number" />
-              </Form.Item>
-            </Col>
-            <Col xs={24} sm={12} md={6}>
-              <Form.Item
-                label="Height (cm)"
-                name="height"
-                rules={[{ required: true, message: 'Please input your height!' }]}
-              >
-                <Input name="height" value={formData.height} onChange={handleChange} className="input-number" />
-              </Form.Item>
-            </Col>
-            <Col xs={24} sm={12} md={6}>
-              <Form.Item
-                label="Age"
-                name="age"
-                rules={[{ required: true, message: 'Please input your age!' }]}
-              >
-                <Input name="age" value={formData.age} onChange={handleChange} className="input-number" />
-              </Form.Item>
-            </Col>
-            <Col xs={24} sm={12} md={6}>
+          <Row gutter={[16, 16]}>
+            {['weight', 'height', 'age'].map(field => (
+              <Col xs={24} sm={12} md={8} key={field}>
+                <Form.Item
+                  label={field.charAt(0).toUpperCase() + field.slice(1)}
+                  name={field}
+                  rules={[{ required: true, message: `Please input your ${field}!` }]}
+                >
+                  <Input />
+                </Form.Item>
+              </Col>
+            ))}
+            <Col xs={24} sm={12} md={8}>
               <Form.Item
                 label="Gender"
                 name="gender"
@@ -250,87 +164,86 @@ const CalorieCalculator = () => {
               </Form.Item>
             </Col>
           </Row>
-          <Divider />
           <Form.Item>
-            <Button type="primary" htmlType="submit" className="calculate-button">
+            <Button type="primary" htmlType="submit">
               Calculate
             </Button>
           </Form.Item>
         </Form>
-        {bmi && (
-          <div className="result">
-            <p><strong>Body Mass Index (BMI):</strong> {bmi}</p>
-            <p><strong>Weight Category:</strong> {bmiCategory}</p>
-          </div>
-        )}
+        
         {calories && (
-          <div className="result">
-            <div>
-            <p><strong>Breakfast:</strong> {(calories * 0.25).toFixed(2)} kcal 
-              <p><Button onClick={() => fetchMeals('https://v1.nocodeapi.com/yahay/google_sheets/KsgLmdaJtmoQSSWI?tabId=sayfa1', 'Breakfast', calories * 0.25)} className="calculate-button">
-                Make Breakfast List
-              </Button></p>
-              {breakfastList.length > 0 && (
-                <ul style={{ fontSize: '15px' }}>
-                  {breakfastList.map((meal, index) => (
-                    <li key={index}>{meal.Besin}: {meal.Porsiyon_Miktari}: {meal.Kalori_Miktari} kcal</li>
-                  ))}
-                </ul>
-              )}
-            </p>
-            </div>
-            <div><p><strong>Lunch:</strong> {(calories * 0.30).toFixed(2)} kcal
-              <p><Button onClick={() => fetchMeals('https://v1.nocodeapi.com/yahay/google_sheets/pqHSFrSugOJqIfCt?tabId=sayfa1', 'Lunch', calories * 0.30)} className="calculate-button">
-                Make Lunch List
-              </Button></p>
-              {lunchList.length > 0 && (
-                <ul style={{ fontSize: '15px' }}>
-                  {lunchList.map((meal, index) => (
-                    <li key={index}>{meal.Besin}: {meal.Porsiyon_Miktari}:  {meal.Kalori_Miktari} kcal</li>
-                  ))}
-                </ul>
-              )}
-            </p>
-            </div>
-            <div>
-            <p><strong>Dinner:</strong> {(calories * 0.30).toFixed(2)} kcal
-              <p><Button onClick={() => fetchMeals('https://v1.nocodeapi.com/yahay/google_sheets/SUmYpLRIPwrUEijD?tabId=sayfa1', 'Dinner', calories * 0.30)} className="calculate-button">
-                Make Dinner List
-              </Button></p>
-              {dinnerList.length > 0 && (
-                <ul style={{ fontSize: '15px' }}>
-                  {dinnerList.map((meal, index) => (
-                    <li key={index}>{meal.Besin}:  {meal.Porsiyon_Miktari}:  {meal.Kalori_Miktari} kcal</li>
-                  ))}
-                </ul>
-              )}
-            </p>
-            </div>
-            <div>
-            <p><strong>Snacks:</strong> {(calories * 0.15).toFixed(2)} kcal
-              <p><Button onClick={() => fetchMeals('https://v1.nocodeapi.com/yahay/google_sheets/AznBYZtifIeenXaf?tabId=sayfa1', 'Snacks', calories * 0.15)} className="calculate-button">
-                Make Snacks List
-              </Button></p>
-              {snacksList.length > 0 && (
-                <ul style={{ fontSize: '15px' }}>
-                  {snacksList.map((meal, index) => (
-                    <li key={index}>{meal.Besin}:  {meal.Porsiyon_Miktari}:  {meal.Kalori_Miktari} kcal</li>
-                  ))}
-                </ul>
-              )}
-            </p>
-            </div>
-            <p><strong>Daily Calorie Requirement:</strong> {calories} kcal</p>
-            <p><AlertButton></AlertButton></p>
-            <p><AlertButtonUser_info></AlertButtonUser_info></p>
-          </div>
+          <>
+            <Divider />
+            <Row gutter={[16, 16]}>
+              <Col xs={24} md={12}>
+                <Card title="Results" bordered={false}>
+                  <p><strong>Body Mass Index (BMI):</strong> {bmi}</p>
+                  <p><strong>Weight Category:</strong> {bmiCategory}</p>
+                  <p><strong>Daily Calorie Requirement:</strong> {calories} kcal</p>
+                </Card>
+              </Col>
+              <Col xs={24} md={12}>
+                <Card title="Calorie Distribution" bordered={false}>
+                  <ResponsiveContainer width="100%" height={200}>
+                    <BarChart data={mealData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="name" />
+                      <YAxis />
+                      <Tooltip />
+                      <Legend />
+                      <Bar dataKey="calories" fill="#8884d8" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </Card>
+              </Col>
+            </Row>
+            
+            <Divider />
+            <Title level={4}>Meal Planning</Title>
+            <Row gutter={[16, 16]}>
+              {['Breakfast', 'Lunch', 'Dinner', 'Snacks'].map(meal => (
+                <Col xs={24} sm={12} md={6} key={meal}>
+                  <Card 
+                    title={`${meal} (${(calories * (meal === 'Snacks' ? 0.15 : meal === 'Breakfast' ? 0.25 : 0.30)).toFixed(2)} kcal)`} 
+                    extra={<Button onClick={() => fetchMeals(`https://v1.nocodeapi.com/yahay/google_sheets/KsgLmdaJtmoQSSWI?tabId=sayfa1`, meal)}>Plan</Button>}
+                    style={{ height: '100%' }}
+                  >
+                    {mealLists[meal.toLowerCase()].length > 0 ? (
+                      <ul>
+                        {mealLists[meal.toLowerCase()].map((item, index) => (
+                          <li key={index}>{item.Besin}: {item.Porsiyon_Miktari} - {item.Kalori_Miktari} kcal</li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p>No meals planned yet</p>
+                    )}
+                  </Card>
+                </Col>
+              ))}
+            </Row>
+            
+            <Divider />
+            <Row gutter={[16, 16]}>
+              <Col xs={24} sm={12}>
+                <Button onClick={() => sendEmail('Meal lists')} block>
+                  Send Meal Lists As Email
+                </Button>
+              </Col>
+              <Col xs={24} sm={12}>
+                <Button onClick={() => sendEmail('Physique info')} block>
+                  Send Physique Info As Email
+                </Button>
+              </Col>
+            </Row>
+          </>
         )}
       </Card>
+      
       <Modal
         title={`Select ${modalType}`}
         visible={visibleModal}
-        onOk={handleOk}
-        onCancel={handleCancel}
+        onOk={handleModalOk}
+        onCancel={handleModalCancel}
         okText="Save"
         cancelText="Cancel"
       >
@@ -340,12 +253,8 @@ const CalorieCalculator = () => {
           onChange={handleMealSelection}
         >
           {mealOptions.map((meal) => (
-            <Checkbox 
-              key={meal.Besin} 
-              value={meal} 
-              disabled={disabledOptions.includes(meal.Besin)}
-            >
-              {<p>{meal.Besin}: {meal.Porsiyon_Miktari}: {meal.Kalori_Miktari} kcal</p>}
+            <Checkbox key={meal.Besin} value={meal}>
+              {meal.Besin}: {meal.Porsiyon_Miktari} - {meal.Kalori_Miktari} kcal
             </Checkbox>
           ))}
         </Checkbox.Group>
